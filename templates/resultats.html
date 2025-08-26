@@ -1,0 +1,84 @@
+<!-- templates/resultats.html -->
+{% extends "base.html" %}
+
+{% block title %}Résultats{% endblock %}
+
+{% block header %}Résultats du Tirage{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Résultats du tirage</h2>
+    <p><strong>Montant total de la cagnotte :</strong> {{ settings.jackpot_amount | format_gain }}</p>
+    <p><strong>Numéros tirés :</strong>
+        {% for numero in tirage.numeros %}
+            <span class="correct-number">{{ numero }}</span>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <p><strong>Étoiles tirées :</strong>
+        {% for etoile in tirage.etoiles %}
+            <span class="correct-star">{{ etoile }}</span>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
+    <!--Bouton pour afficher/masquer les proximités
+    <button id="toggleProximity">Afficher/Masquer Proximité</button>-->
+
+    <h3>Classement des participants</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Nom</th>
+                <th>Numéros</th>
+                <th>Étoiles</th>
+                <th>Correspondances Numéros</th>
+                <th>Correspondances Étoiles</th>
+                <th class="proximity-column">Proximité Numéros</th>
+                <th class="proximity-column">Proximité Étoiles</th>
+                <th>Gain</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participants[:settings.max_gagnants] %}
+            <tr>
+                <td data-label="Position">{{ loop.index }}</td>
+                <td data-label="Nom">{{ participant.nom }}</td>
+                <td data-label="Numéros">
+                    {% for numero in participant.numeros %}
+                        <span class="{% if numero in tirage.numeros %}correct-number{% endif %}">
+                            {{ numero }}
+                        </span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td data-label="Étoiles">
+                    {% for etoile in participant.etoiles %}
+                        <span class="{% if etoile in tirage.etoiles %}correct-star{% endif %}">
+                            {{ etoile }}
+                        </span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td data-label="Correspondances Numéros">{{ participant.match_numeros }}</td>
+                <td data-label="Correspondances Étoiles">{{ participant.match_etoiles }}</td>
+                <td data-label="Proximité Numéros" class="proximity-column">{{ participant.numbers_proximity }}</td>
+                <td data-label="Proximité Étoiles" class="proximity-column">{{ participant.stars_proximity }}</td>
+                <td data-label="Gain">{{ participant.gain | format_gain }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+    </table>
+</div>
+
+<!-- Script pour basculer la visibilité des proximités -->
+<script>
+    document.getElementById('toggleProximity').addEventListener('click', function() {
+        var columns = document.querySelectorAll('.proximity-column');
+        columns.forEach(function(col) {
+            if (col.style.display === 'none' || col.style.display === '') {
+                col.style.display = 'table-cell';
+            } else {
+                col.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

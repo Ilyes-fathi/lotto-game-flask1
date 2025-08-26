@@ -1,0 +1,19 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block header %}Bienvenue sur le Jeu du LOTO{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <h2>Participez au prochain tirage et tentez de remporter la cagnotte de :</h2>
+    <div class="jackpot-amount">
+        {{ settings.jackpot_amount | format_gain }}
+    </div>
+    <p>
+        Le Jeu du LOTO est un jeu de hasard passionnant où vous pouvez choisir vos numéros et étoiles pour tenter de gagner de superbes récompenses. Inscrivez-vous dès maintenant pour participer au prochain tirage !
+    </p>
+    <a href="{{ url_for('inscription') }}" class="cta-button">Inscrivez-vous maintenant</a>
+</div>
+{% endblock %}

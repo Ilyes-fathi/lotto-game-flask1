@@ -1,0 +1,26 @@
+<!-- templates/tirage.html -->
+{% extends "base.html" %}
+
+{% block title %}Tirage{% endblock %}
+
+{% block header %}Tirage{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Effectuer un nouveau tirage</h2>
+
+    <!-- Affichage d'un message d'erreur s'il n'y a pas de participants -->
+    {% if error %}
+    <p class="error-message" style="color: red;">{{ error }}</p>
+    {% else %}
+    <!-- Affichage du message de tirage et du bouton s'il y a des participants -->
+    <p>Pour effectuer le tirage, cliquez sur le bouton ci-dessous :</p>
+    <form action="{{ url_for('tirage') }}" method="post">
+        <button type="submit">Effectuer le tirage</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+
+</body>
+</html>

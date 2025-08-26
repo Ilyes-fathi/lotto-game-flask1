@@ -1,0 +1,78 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Jeu du LOTO{% endblock %}</title>
+    <!-- Inclusion des feuilles de style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Inclusion de Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Meta viewport pour la responsivité -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- Icône du menu hamburger -->
+    <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="main-container">
+        <!-- Menu de navigation latéral -->
+        <nav class="sidebar" id="sidebar">
+            <ul>
+                <li><a href="{{ url_for('index') }}">Accueil</a></li>
+                <li><a href="{{ url_for('rules') }}">Règles du jeu</a></li>
+                <li><a href="{{ url_for('inscription') }}">Inscription au Tirage</a></li>
+                <li><a href="{{ url_for('tirage') }}">Tirage</a></li>
+                <li><a href="{{ url_for('settings') }}">Réglages</a></li>
+            </ul>
+        </nav>
+
+        <!-- Contenu principal -->
+        <div class="content">
+            <!-- En-tête avec logo et titre alignés horizontalement -->
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="{{ url_for('index') }}" aria-label="Accueil">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo du site">
+                    </a>
+                </div>
+                <header>
+                    <h1>{% block header %}{% endblock %}</h1>
+                </header>
+                <div class="header-dummy"></div> <!-- Espace réservé pour centrer le titre -->
+            </div>
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <!-- Bloc pour les scripts JavaScript -->
+    {% block scripts %}
+    <script>
+        // Script pour le menu hamburger
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const content = document.querySelector('.content');
+
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                menuToggle.classList.toggle('open');
+                content.classList.toggle('menu-open');
+            });
+
+            // Fermer le menu lorsque l'utilisateur clique en dehors
+            content.addEventListener('click', function() {
+                if (sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                    menuToggle.classList.remove('open');
+                    content.classList.remove('menu-open');
+                }
+            });
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

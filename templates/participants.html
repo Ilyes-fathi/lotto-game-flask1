@@ -1,0 +1,55 @@
+<!-- templates/participants.html -->
+{% extends "base.html" %}
+
+{% block title %}Liste des Participants{% endblock %}
+
+{% block header %}Liste des Participants{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <!-- Afficher un message d'erreur si la variable 'erreur' existe -->
+    {% if erreur %}
+    <p style="color: red;">{{ erreur }}</p>
+    {% endif %}
+
+    <h2>Liste des Participants</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Numéros</th>
+                <th>Étoiles</th>
+                <th>Gains</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participants %}
+            <tr>
+                <td>{{ participant.nom }}</td>
+                <td>{{ participant.numeros | join(', ') }}</td>
+                <td>{{ participant.etoiles | join(', ') }}</td>
+                <td>{{ participant.gain | format_gain }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+<!-- Formulaire pour générer des participants -->
+<h3>Générer des participants</h3>
+<form action="{{ url_for('generer_participants') }}" method="post">
+    <label for="nombre">Nombre de participants à générer (max 100) :</label>
+    <input type="number" id="nombre" name="nombre" min="1" max="100" required>
+    <button type="submit">Générer</button>
+</form>
+
+<!-- Bouton pour supprimer tous les participants -->
+<h3>Supprimer tous les participants</h3>
+<form action="{{ url_for('supprimer_participants') }}" method="post">
+    <button type="submit">Supprimer tous les participants</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!-- templates/settings.html -->
+{% extends "base.html" %}
+
+{% block title %}Réglages{% endblock %}
+
+{% block header %}Modifier les Réglages du Jeu{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Réglages :</h2>
+
+    {% if success %}
+    <p class="success-message">{{ success }}</p>
+    {% endif %}
+
+    <!-- Formulaire de réglages -->
+    <form action="{{ url_for('settings') }}" method="post">
+        <label for="max_participants">Nombre maximum de participants :</label>
+        <input type="number" id="max_participants" name="max_participants" value="{{ settings.max_participants }}" required><br><br>
+
+        <label for="jackpot_amount">Montant de la cagnotte (€) :</label>
+        <input type="number" step="0.01" id="jackpot_amount" name="jackpot_amount" value="{{ settings.jackpot_amount | format_number }}" required><br><br>
+
+        <label for="max_numeros">Nombre maximum de numéros disponibles :</label>
+        <input type="number" id="max_numeros" name="max_numeros" value="{{ settings.max_numeros }}" required><br><br>
+
+        <label for="max_etoiles">Nombre maximum d'étoiles disponibles :</label>
+        <input type="number" id="max_etoiles" name="max_etoiles" value="{{ settings.max_etoiles }}" required><br><br>
+
+        <label for="selection_numeros">Nombre de numéros à sélectionner :</label>
+        <input type="number" id="selection_numeros" name="selection_numeros" value="{{ settings.selection_numeros }}" required><br><br>
+
+        <label for="selection_etoiles">Nombre d'étoiles à sélectionner :</label>
+        <input type="number" id="selection_etoiles" name="selection_etoiles" value="{{ settings.selection_etoiles }}" required><br><br>
+
+        <label for="max_gagnants">Nombre maximum de gagnants (max 10) :</label>
+        <input type="number" id="max_gagnants" name="max_gagnants" value="{{ settings.max_gagnants }}" min="1" max="10" required><br><br>
+
+        <button type="submit">Sauvegarder les réglages</button>
+    </form>
+
+    <!-- Formulaire pour réinitialiser les réglages aux valeurs par défaut -->
+    <form action="{{ url_for('reset_settings') }}" method="post" style="margin-top: 20px;">
+        <button type="submit" class="reset-button">Réinitialiser les réglages par défaut</button>
+    </form>
+</div>
+{% endblock %}

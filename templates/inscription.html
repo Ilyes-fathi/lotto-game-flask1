@@ -1,0 +1,217 @@
+<!-- templates/inscription.html -->
+{% extends "base.html" %}
+
+{% block title %}Inscription au Tirage{% endblock %}
+
+{% block header %}Inscription au Tirage{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Ajouter un participant manuellement</h2>
+
+    <!-- Formulaire d'inscription manuelle -->
+    <form action="{{ url_for('inscription') }}" method="post">
+        <label for="nom">Nom du participant :</label><br>
+        <input type="text" id="nom" name="nom" value="{{ nom }}" required><br><br>
+
+        <h3>Choisissez {{ settings.selection_numeros }} numéros :</h3>
+        <div class="grid-container numeros-checkbox">
+            {% set selected_numeros = numeros %}
+            {% for i in range(1, settings.max_numeros + 1) %}
+            <label class="custom-checkbox">
+                <input type="checkbox" id="numero-{{ i }}" name="numeros" value="{{ i }}"
+                {% if i in selected_numeros %} checked {% endif %}>
+                <span>{{ i }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        <p id="numero-erreur" class="error-message" style="display: none;">
+            Vous ne pouvez sélectionner que {{ settings.selection_numeros }} numéros.
+        </p>
+        <br>
+
+        <h3>Choisissez {{ settings.selection_etoiles }} étoiles :</h3>
+        <div class="grid-container etoiles-checkbox">
+            {% set selected_etoiles = etoiles %}
+            {% for i in range(1, settings.max_etoiles + 1) %}
+            <label class="custom-checkbox">
+                <input type="checkbox" id="etoile-{{ i }}" name="etoiles" value="{{ i }}"
+                {% if i in selected_etoiles %} checked {% endif %}>
+                <span>{{ i }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        <p id="etoile-erreur" class="error-message" style="display: none;">
+            Vous ne pouvez sélectionner que {{ settings.selection_etoiles }} étoiles.
+        </p>
+
+        <button type="submit">Ajouter le participant</button>
+
+        {% if erreur %}
+        <p class="error-message">{{ erreur }}</p>
+        {% endif %}
+    </form>
+
+    <!-- Formulaire de génération automatique de participants -->
+    <h2>Générer des participants automatiquement</h2>
+    <form action="{{ url_for('generer_participants') }}" method="post">
+        <label for="nombre">Nombre de participants à générer (max {{ settings.max_participants - participants|length }} restants) :</label><br>
+        <input type="number" id="nombre" name="nombre" min="1" max="{{ settings.max_participants - participants|length }}" required><br>
+        <button type="submit">Générer</button>
+        {% if generation_erreur %}
+        <p class="error-message">{{ generation_erreur }}</p>
+        {% endif %}
+    </form>
+
+    <!-- Formulaire de suppression de tous les participants -->
+    <h2>Supprimer tous les participants</h2>
+    <form action="{{ url_for('supprimer_participants') }}" method="post" id="supprimer-form">
+        <!-- Champs cachés pour préserver les données du formulaire -->
+        <input type="hidden" name="nom" id="supprimer-nom" value="{{ nom }}">
+        <input type="hidden" name="numeros" id="supprimer-numeros" value="{{ numeros | join(',') }}">
+        <input type="hidden" name="etoiles" id="supprimer-etoiles" value="{{ etoiles | join(',') }}">
+        <button type="submit">Supprimer tous les participants</button>
+    </form>
+
+    <!-- Liste des participants -->
+    <h2>Liste des Participants</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Numéros</th>
+                <th>Étoiles</th>
+                <th>Gains</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participants %}
+            <tr>
+                <td>{{ participant.nom }}</td>
+                <td>{{ participant.numeros | join(', ') }}</td>
+                <td>{{ participant.etoiles | join(', ') }}</td>
+                <td>{{ participant.gain | format_gain }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Popup de validation -->
+{% if success %}
+<div class="popup-overlay" id="popup-overlay">
+    <div class="popup-content">
+        <p>{{ success }}</p>
+        <button id="close-popup">Fermer</button>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const maxNumeros = {{ settings.selection_numeros | tojson }};
+        const maxEtoiles = {{ settings.selection_etoiles | tojson }};
+
+        const numeroCheckboxes = document.querySelectorAll('.numeros-checkbox input[type="checkbox"]');
+        const etoileCheckboxes = document.querySelectorAll('.etoiles-checkbox input[type="checkbox"]');
+
+        const numeroErreur = document.getElementById('numero-erreur');
+        const etoileErreur = document.getElementById('etoile-erreur');
+
+        // Fonction pour limiter la sélection des numéros
+        function limiterNumerosSelection() {
+            const checkedNumeros = document.querySelectorAll('.numeros-checkbox input[type="checkbox"]:checked');
+
+            if (checkedNumeros.length === maxNumeros) {
+                numeroErreur.textContent = `Vous avez atteint le nombre maximum de ${maxNumeros} numéros.`;
+                numeroErreur.style.display = 'block';
+            } else if (checkedNumeros.length > maxNumeros) {
+                numeroErreur.textContent = `Vous ne pouvez pas sélectionner plus de ${maxNumeros} numéros.`;
+                numeroErreur.style.display = 'block';
+            } else {
+                numeroErreur.style.display = 'none';
+            }
+
+            numeroCheckboxes.forEach(checkbox => {
+                if (checkedNumeros.length >= maxNumeros && !checkbox.checked) {
+                    checkbox.disabled = true;
+                } else {
+                    checkbox.disabled = false;
+                }
+            });
+        }
+
+        // Fonction pour limiter la sélection des étoiles
+        function limiterEtoilesSelection() {
+            const checkedEtoiles = document.querySelectorAll('.etoiles-checkbox input[type="checkbox"]:checked');
+
+            if (checkedEtoiles.length === maxEtoiles) {
+                etoileErreur.textContent = `Vous avez atteint le nombre maximum de ${maxEtoiles} étoiles.`;
+                etoileErreur.style.display = 'block';
+            } else if (checkedEtoiles.length > maxEtoiles) {
+                etoileErreur.textContent = `Vous ne pouvez pas sélectionner plus de ${maxEtoiles} étoiles.`;
+                etoileErreur.style.display = 'block';
+            } else {
+                etoileErreur.style.display = 'none';
+            }
+
+            etoileCheckboxes.forEach(checkbox => {
+                if (checkedEtoiles.length >= maxEtoiles && !checkbox.checked) {
+                    checkbox.disabled = true;
+                } else {
+                    checkbox.disabled = false;
+                }
+            });
+        }
+
+        // Écouteurs d'événements pour les cases à cocher
+        numeroCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', limiterNumerosSelection);
+        });
+
+        etoileCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', limiterEtoilesSelection);
+        });
+
+        // Initialisation des fonctions
+        limiterNumerosSelection();
+        limiterEtoilesSelection();
+
+        // Gestion de la popup de succès
+        const popupOverlay = document.getElementById('popup-overlay');
+        if (popupOverlay) {
+            const closePopupButton = document.getElementById('close-popup');
+            closePopupButton.addEventListener('click', function() {
+                popupOverlay.style.display = 'none';
+            });
+
+            // Fermer automatiquement après 5 secondes
+            setTimeout(function() {
+                popupOverlay.style.display = 'none';
+            }, 5000);
+        }
+
+        // Préservation des données du formulaire lors de la suppression
+        const supprimerForm = document.getElementById('supprimer-form');
+        supprimerForm.addEventListener('submit', function(event) {
+            // Récupérer la valeur de 'nom'
+            const nom = document.getElementById('nom').value;
+
+            // Récupérer les numéros sélectionnés
+            const numeros = Array.from(document.querySelectorAll('.numeros-checkbox input[type="checkbox"]:checked'))
+                                .map(cb => cb.value)
+                                .join(',');
+
+            // Récupérer les étoiles sélectionnées
+            const etoiles = Array.from(document.querySelectorAll('.etoiles-checkbox input[type="checkbox"]:checked'))
+                                 .map(cb => cb.value)
+                                 .join(',');
+
+            // Mettre à jour les champs cachés
+            document.getElementById('supprimer-nom').value = nom;
+            document.getElementById('supprimer-numeros').value = numeros;
+            document.getElementById('supprimer-etoiles').value = etoiles;
+        });
+    });
+</script>
+{% endblock %}

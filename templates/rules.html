@@ -1,0 +1,73 @@
+<!-- templates/rules.html -->
+{% extends "base.html" %}
+
+{% block title %}Règles du Jeu du LOTO{% endblock %}
+
+{% block header %}Règles du Jeu du LOTO{% endblock %}
+
+{% block content %}
+<div class="rules-container">
+    <p>Bienvenue dans le jeu du LOTO ! Voici les règles pour participer :</p>
+    <ul class="rules-list">
+        <!-- Liste des règles du jeu avec icônes -->
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Choisissez {{ settings.selection_numeros }} numéros uniques :</strong> entre 1 et {{ settings.max_numeros }}.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Sélectionnez {{ settings.selection_etoiles }} étoiles uniques :</strong> entre 1 et {{ settings.max_etoiles }}.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Tirage aléatoire :</strong> Vous pouvez choisir de générer les numéros et étoiles aléatoirement ou manuellement. Assurez-vous qu'aucun numéro ou étoile n'est répété.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Jackpot garanti de {{ settings.jackpot_amount | format_gain }} :</strong> Cette somme est répartie entre les {{ settings.max_gagnants }} premiers participants selon un pourcentage prédéfini, quel que soit le nombre de participants.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Classement des gagnants :</strong> Les gagnants sont classés selon le nombre de numéros et d'étoiles trouvés. Le classement se base également sur la proximité des numéros avec ceux tirés.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Répartition des gains :</strong> Si plusieurs participants ont les mêmes résultats, les gains des positions concernées sont additionnés et divisés équitablement.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Bonus et critères de classement :</strong> Les étoiles agissent comme un bonus. Cependant, les numéros sont plus importants pour le classement.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Redistribution des gains :</strong> Si moins de 10 participants, les pourcentages non attribués sont redistribués proportionnellement aux participants restants.
+            </div>
+        </li>
+        <li>
+            <i></i>
+            <div class="compact-text">
+                <strong>Nombre de gagnants :</strong> Les {{ settings.max_gagnants }} premiers participants sont récompensés selon leur classement.
+            </div>
+        </li>
+    </ul>
+    <p id="rules-footer">Bonne chance à tous les participants !</p>
+</div>
+{% endblock %}
+
+</body>
+</html>

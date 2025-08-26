@@ -1,0 +1,547 @@
+/* static/css/styles.css */
+
+/* ========== Réinitialisation des marges et paddings par défaut ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== Styles généraux du corps de la page ========== */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* ========== Conteneur principal ========== */
+.main-container {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Responsive pour le conteneur principal */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+}
+
+/* ========== Icône du menu hamburger ========== */
+.menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #004080;
+    font-size: 30px;
+    z-index: 1001; /* Doit être supérieur au z-index du contenu */
+}
+
+/* ========== Menu de navigation latéral ========== */
+.sidebar {
+    width: 200px;
+    background-color: #004080;
+    min-height: 100vh;
+    padding-top: 20px;
+    position: relative;
+    transition: transform 0.3s ease;
+    z-index: 1000; /* Doit être inférieur au menu-toggle mais supérieur au contenu */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #003366;
+}
+
+/* Responsive pour la sidebar et le menu hamburger */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -200px; /* Masquer le menu en le déplaçant à gauche */
+        top: 0;
+        width: 200px;
+        height: 100%;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0; /* Afficher le menu lorsqu'il est ouvert */
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Assombrir le fond lorsque le menu est ouvert */
+    .content.menu-open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+    }
+
+    .content {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+/* ========== Contenu principal ========== */
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* ========== En-tête avec logo et titre ========== */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.header-logo img {
+    width: 100px;
+    height: auto;
+    transition: width 0.3s ease;
+}
+
+.header-dummy {
+    width: 100px;
+}
+
+/* Responsive pour le logo et l'en-tête */
+@media (max-width: 768px) {
+    .header-logo img {
+        width: 80px;
+    }
+    .header-dummy {
+        width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-logo img {
+        width: 60px;
+    }
+
+    .header-dummy {
+        width: 0;
+    }
+
+    header h1 {
+        text-align: left;
+        margin-top: 10px;
+    }
+}
+
+/* ========== Titre principal ========== */
+header h1 {
+    font-size: 2em;
+    color: #004080;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+/* ========== Conteneur du contenu spécifique ========== */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+/* ========== Titres secondaires ========== */
+h2, h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* ========== Formulaires ========== */
+form {
+    margin-bottom: 30px;
+}
+
+/* ========== Grille pour les cases à cocher ========== */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 10px;
+    justify-content: center;
+}
+
+/* ========== Style des cases à cocher personnalisées ========== */
+.custom-checkbox {
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 46px;
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox:hover {
+    background-color: #f0f0f0;
+    border-color: #007bff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.numeros-checkbox input[type="checkbox"]:checked + span {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    display: block;
+    line-height: 46px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.etoiles-checkbox input[type="checkbox"]:checked + span {
+    background-color: #ffcc00;
+    color: black;
+    border-color: #ffcc00;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    display: block;
+    line-height: 46px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== Table des participants ========== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f0f0f0;
+}
+
+table td {
+    text-align: center;
+}
+
+/* Responsive pour les tables */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    table {
+        border: none;
+    }
+
+    thead tr {
+        display: none;
+    }
+
+    tbody tr {
+        margin-bottom: 15px;
+    }
+
+    td {
+        text-align: left;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    td::before {
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        width: calc(50% - 30px);
+        white-space: nowrap;
+        font-weight: bold;
+        text-align: left;
+        content: attr(data-label);
+    }
+
+    td:last-child {
+        border-bottom: 0;
+    }
+}
+
+
+/* ========== Boutons ========== */
+button {
+    padding: 10px 20px;
+    background-color: #004080;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #003366;
+}
+
+/* ========== Messages d'erreur et de succès ========== */
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.success-message {
+    color: green;
+    margin-top: 10px;
+}
+
+/* ========== Popup ========== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-content p {
+    margin-bottom: 20px;
+}
+
+.popup-content button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.popup-content button:hover {
+    background-color: #218838;
+}
+
+/* ========== Styles spécifiques pour les numéros et étoiles corrects ========== */
+.correct-number {
+    color: rgb(34, 193, 76);
+    font-weight: bold;
+}
+
+.correct-star {
+    color: rgb(255, 193, 7);
+    font-weight: bold;
+}
+
+/* ========== Styles spécifiques pour la page d'accueil ========== */
+.home-container {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.home-container h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.jackpot-amount {
+    font-size: 48px;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 40px;
+}
+
+.home-container p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #27ae60;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #219150;
+}
+
+/* ========== Styles pour les règles du jeu ========== */
+.rules-container {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rules-container p {
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: #004080;
+    font-weight: bold;
+}
+
+.rules-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.rules-list li {
+    font-size: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.rules-list li i {
+    margin-right: 15px;
+    font-style: normal;
+    font-size: 24px;
+    color: #004080;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.rules-list li strong {
+    color: #004080;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.compact-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#rules-footer {
+    padding-top: 30px;
+    font-size: 18px;
+    font-style: italic;
+    color: #858080;
+}
+
+/* ========== Icônes pour les règles ========== */
+.rules-list li i {
+    font-style: normal;
+    font-size: 24px;
+    color: #004080;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 15px;
+}
+
+.rules-list li:nth-child(1) i::before { content: "🎲"; }
+.rules-list li:nth-child(2) i::before { content: "⭐"; }
+.rules-list li:nth-child(3) i::before { content: "🎰"; }
+.rules-list li:nth-child(4) i::before { content: "💰"; }
+.rules-list li:nth-child(5) i::before { content: "🏆"; }
+.rules-list li:nth-child(6) i::before { content: "🔄"; }
+.rules-list li:nth-child(7) i::before { content: "✨"; }
+.rules-list li:nth-child(8) i::before { content: "📈"; }
+.rules-list li:nth-child(9) i::before { content: "🎁"; }
+
+
+/* ========== Bouton pour afficher/masquer les proximités ========== */
+#toggleProximity {
+    margin-bottom: 15px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#toggleProximity:hover {
+    background-color: #0056b3;
+}
+
+.proximity-column {
+    display: none;
+}
+
+/* ========== Styles pour le bouton de réinitialisation ========== */
+.reset-button {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.reset-button:hover {
+    background-color: #cc0000;
+}
